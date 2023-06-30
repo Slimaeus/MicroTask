@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MicroTask.Services.Tasks.Domain;
+using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Text;
 
@@ -60,6 +61,7 @@ builder.Services.AddAuthentication(config =>
     });
 
 builder.Services.AddAuthorization();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
@@ -69,7 +71,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -82,13 +83,15 @@ var tasks = new List<ApplicationTask>
     {
         Id = 1,
         Title = "First Task",
-        Description = "Do homework"
+        Description = "Do homework",
+        CategoryId = 0
     },
     new ApplicationTask
     {
         Id = 2,
         Title = "Second Task",
-        Description = "Go to sleep"
+        Description = "Go to sleep",
+        CategoryId = 1
     }
 };
 
@@ -99,14 +102,20 @@ app.MapGet($"api/{TaskEndpoint}", () =>
     return Results.Ok(tasks);
 });
 
-app.MapGet($"api/{TaskEndpoint}/{{id:int}}", (int id) =>
+app.MapGet($"api/{TaskEndpoint}/{{id:int}}", async (int id, HttpClient client) =>
 {
     var task = tasks.SingleOrDefault(x => x.Id == id);
-    return task switch
+    if (task is null)
     {
-        null => Results.NotFound(),
-        _ => Results.Ok(task)
-    };
+        return Results.NotFound();
+    }
+    var responseMessage = await client.GetAsync($"http://microtask.services.categories.api/api/Categories/{task.Id}");
+    var category = JsonConvert.DeserializeObject<Category>(await responseMessage.Content.ReadAsStringAsync());
+    if (category is not null)
+    {
+        task.Category = category;
+    }
+    return Results.Ok(task);
 });
 
 app.MapPost($"api/{TaskEndpoint}", (ApplicationTask task, ClaimsPrincipal user) =>
