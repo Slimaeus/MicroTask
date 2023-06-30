@@ -91,7 +91,7 @@ var tasks = new List<ApplicationTask>
         Id = 2,
         Title = "Second Task",
         Description = "Go to sleep",
-        CategoryId = 1
+        CategoryId = 2
     }
 };
 
@@ -109,7 +109,7 @@ app.MapGet($"api/{TaskEndpoint}/{{id:int}}", async (int id, HttpClient client) =
     {
         return Results.NotFound();
     }
-    var responseMessage = await client.GetAsync($"http://microtask.services.categories.api/api/Categories/{task.Id}");
+    var responseMessage = await client.GetAsync($"http://microtask.services.categories.api/api/Categories/{task.CategoryId}");
     var category = JsonConvert.DeserializeObject<Category>(await responseMessage.Content.ReadAsStringAsync());
     if (category is not null)
     {
@@ -118,9 +118,16 @@ app.MapGet($"api/{TaskEndpoint}/{{id:int}}", async (int id, HttpClient client) =
     return Results.Ok(task);
 });
 
-app.MapPost($"api/{TaskEndpoint}", (ApplicationTask task, ClaimsPrincipal user) =>
+app.MapPost($"api/{TaskEndpoint}", async (ApplicationTask task, ClaimsPrincipal user, HttpClient client) =>
 {
+    var responseMessage = await client.GetAsync($"http://microtask.services.categories.api/api/Categories/{task.CategoryId}");
+    var category = JsonConvert.DeserializeObject<Category>(await responseMessage.Content.ReadAsStringAsync());
+    if (category is null)
+    {
+        return Results.BadRequest("Category not found");
+    }
     task.Id = tasks.Max(x => x.Id) + 1;
+    task.Category = category;
     task.UserId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
     tasks.Add(task);
     return Results.Created($"api/{TaskEndpoint}", task);
