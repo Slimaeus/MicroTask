@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MicroTask.Serivces.Users.Infrastructure\MicroTask.Serivces.Users.Infrastructure.csproj" />
+    <ProjectReference Include="..\MicroTask.Serivces.Users.Infrastructure\MicroTask.Services.Users.Infrastructure.csproj" />
     <ProjectReference Include="..\MicroTask.Services.Users.Domain\MicroTask.Services.Users.Domain.csproj" />
   </ItemGroup>
 

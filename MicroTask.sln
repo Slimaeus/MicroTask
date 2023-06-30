@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroTask.Services.Users.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroTask.Services.Users.Domain", "MicroTask.Services.Users.Domain\MicroTask.Services.Users.Domain.csproj", "{C169BB79-DE77-47E2-A98D-2FA28E7F780E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroTask.Serivces.Users.Infrastructure", "MicroTask.Serivces.Users.Infrastructure\MicroTask.Serivces.Users.Infrastructure.csproj", "{24F9A075-8CBA-4628-8FAD-8DE8783BEC89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroTask.Services.Users.Infrastructure", "MicroTask.Serivces.Users.Infrastructure\MicroTask.Services.Users.Infrastructure.csproj", "{24F9A075-8CBA-4628-8FAD-8DE8783BEC89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

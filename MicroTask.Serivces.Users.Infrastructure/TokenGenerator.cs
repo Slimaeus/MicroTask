@@ -5,7 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace MicroTask.Serivces.Users.Infrastructure;
+namespace MicroTask.Services.Users.Infrastructure;
 
 public class TokenGenerator
 {

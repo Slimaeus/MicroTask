@@ -1,5 +1,5 @@
-using MicroTask.Serivces.Users.Infrastructure;
 using MicroTask.Services.Users.Domain;
+using MicroTask.Services.Users.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
