@@ -47,10 +47,4 @@ app.MapPost("api/Users/login", (TokenGenerator tokenGenerator, ApplicationUser u
     return Results.Ok(token);
 });
 
-app.MapGet("api/Tasks", async (HttpClient client) =>
-{
-    var result = await client.GetAsync("http://microtask.services.tasks.api/api/tasks");
-    return Results.Ok(result);
-});
-
 app.Run();
