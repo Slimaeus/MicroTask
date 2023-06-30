@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  microtask.services.tasks.api:
+    image: ${DOCKER_REGISTRY-}microtaskservicestasksapi
+    build:
+      context: .
+      dockerfile: MicroTask.Services.Tasks.Api/Dockerfile
+
+  microtask.services.users.api:
+    image: ${DOCKER_REGISTRY-}microtaskservicesusersapi
+    build:
+      context: .
+      dockerfile: MicroTask.Services.Users.Api/Dockerfile
+
