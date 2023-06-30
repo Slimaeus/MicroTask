@@ -74,7 +74,7 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 var tasks = new List<ApplicationTask>
 {

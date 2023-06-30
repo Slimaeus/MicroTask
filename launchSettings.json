@@ -5,7 +5,8 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "microtask.services.tasks.api": "StartDebugging",
-        "microtask.services.users.api": "StartDebugging"
+        "microtask.services.users.api": "StartDebugging",
+        "microtask.services.categories.api": "StartDebugging"
       }
     }
   }

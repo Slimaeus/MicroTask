@@ -7,19 +7,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{9A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tasks", "Tasks", "{694EB5A1-A809-44B6-9C43-8E374BCC8388}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroTask.Services.Tasks.Api", "MicroTask.Services.Tasks.Api\MicroTask.Services.Tasks.Api.csproj", "{8070D688-74A1-488F-AA6E-D9265660D0F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroTask.Services.Tasks.Api", "MicroTask.Services.Tasks.Api\MicroTask.Services.Tasks.Api.csproj", "{8070D688-74A1-488F-AA6E-D9265660D0F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroTask.Services.Tasks.Domain", "MicroTask.Services.Tasks.Domain\MicroTask.Services.Tasks.Domain.csproj", "{07C22610-BFC5-4146-A88E-F909289384A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroTask.Services.Tasks.Domain", "MicroTask.Services.Tasks.Domain\MicroTask.Services.Tasks.Domain.csproj", "{07C22610-BFC5-4146-A88E-F909289384A2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Users", "Users", "{F2F68DBF-7B33-4E62-80C7-656136F98285}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroTask.Services.Users.Api", "MicroTask.Services.Users.Api\MicroTask.Services.Users.Api.csproj", "{A0BA9F5A-150F-4D93-B7B1-478920996F15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroTask.Services.Users.Api", "MicroTask.Services.Users.Api\MicroTask.Services.Users.Api.csproj", "{A0BA9F5A-150F-4D93-B7B1-478920996F15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroTask.Services.Users.Domain", "MicroTask.Services.Users.Domain\MicroTask.Services.Users.Domain.csproj", "{C169BB79-DE77-47E2-A98D-2FA28E7F780E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroTask.Services.Users.Domain", "MicroTask.Services.Users.Domain\MicroTask.Services.Users.Domain.csproj", "{C169BB79-DE77-47E2-A98D-2FA28E7F780E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroTask.Services.Users.Infrastructure", "MicroTask.Serivces.Users.Infrastructure\MicroTask.Services.Users.Infrastructure.csproj", "{24F9A075-8CBA-4628-8FAD-8DE8783BEC89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroTask.Services.Users.Infrastructure", "MicroTask.Serivces.Users.Infrastructure\MicroTask.Services.Users.Infrastructure.csproj", "{24F9A075-8CBA-4628-8FAD-8DE8783BEC89}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{12392ED8-4013-4A7F-982F-D2328013A39B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Categories", "Categories", "{84EB93AE-3B4C-408E-8AAC-7FA32281070C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroTask.Services.Categories.Api", "MicroTask.Services.Categories.Api\MicroTask.Services.Categories.Api.csproj", "{EBDAEF38-1820-455F-8086-74B199D488B8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroTask.Services.Categories.Domain", "MicroTask.Services.Categories.Domain\MicroTask.Services.Categories.Domain.csproj", "{A93B84D2-7508-470F-9E66-7E477703253D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +57,14 @@ Global
 		{12392ED8-4013-4A7F-982F-D2328013A39B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12392ED8-4013-4A7F-982F-D2328013A39B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12392ED8-4013-4A7F-982F-D2328013A39B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBDAEF38-1820-455F-8086-74B199D488B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBDAEF38-1820-455F-8086-74B199D488B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBDAEF38-1820-455F-8086-74B199D488B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBDAEF38-1820-455F-8086-74B199D488B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A93B84D2-7508-470F-9E66-7E477703253D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A93B84D2-7508-470F-9E66-7E477703253D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A93B84D2-7508-470F-9E66-7E477703253D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A93B84D2-7508-470F-9E66-7E477703253D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,6 +77,9 @@ Global
 		{A0BA9F5A-150F-4D93-B7B1-478920996F15} = {F2F68DBF-7B33-4E62-80C7-656136F98285}
 		{C169BB79-DE77-47E2-A98D-2FA28E7F780E} = {F2F68DBF-7B33-4E62-80C7-656136F98285}
 		{24F9A075-8CBA-4628-8FAD-8DE8783BEC89} = {F2F68DBF-7B33-4E62-80C7-656136F98285}
+		{84EB93AE-3B4C-408E-8AAC-7FA32281070C} = {9AFA690C-7E33-4CB6-B131-2D1B153AE675}
+		{EBDAEF38-1820-455F-8086-74B199D488B8} = {84EB93AE-3B4C-408E-8AAC-7FA32281070C}
+		{A93B84D2-7508-470F-9E66-7E477703253D} = {84EB93AE-3B4C-408E-8AAC-7FA32281070C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC0ADE16-614A-4D98-881E-EDE728EB7370}

@@ -9,6 +9,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<TokenGenerator>();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
@@ -19,7 +20,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 var users = new List<ApplicationUser>
 {
@@ -44,6 +45,12 @@ app.MapPost("api/Users/login", (TokenGenerator tokenGenerator, ApplicationUser u
     if (user.Password != userDto.Password) return Results.Unauthorized();
     var token = tokenGenerator.GenerateToken(user);
     return Results.Ok(token);
+});
+
+app.MapGet("api/Tasks", async (HttpClient client) =>
+{
+    var result = await client.GetAsync("http://microtask.services.tasks.api/api/tasks");
+    return Results.Ok(result);
 });
 
 app.Run();
