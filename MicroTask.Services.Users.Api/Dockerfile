@@ -8,7 +8,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["MicroTask.Services.Users.Api/MicroTask.Services.Users.Api.csproj", "MicroTask.Services.Users.Api/"]
-COPY ["MicroTask.Serivces.Users.Infrastructure/MicroTask.Serivces.Users.Infrastructure.csproj", "MicroTask.Serivces.Users.Infrastructure/"]
+COPY ["MicroTask.Serivces.Users.Infrastructure/MicroTask.Services.Users.Infrastructure.csproj", "MicroTask.Serivces.Users.Infrastructure/"]
 COPY ["MicroTask.Services.Users.Domain/MicroTask.Services.Users.Domain.csproj", "MicroTask.Services.Users.Domain/"]
 RUN dotnet restore "MicroTask.Services.Users.Api/MicroTask.Services.Users.Api.csproj"
 COPY . .

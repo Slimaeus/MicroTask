@@ -68,9 +68,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
 }
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -84,7 +84,7 @@ var tasks = new List<ApplicationTask>
         Id = 1,
         Title = "First Task",
         Description = "Do homework",
-        CategoryId = 0
+        CategoryId = 1
     },
     new ApplicationTask
     {
@@ -96,6 +96,7 @@ var tasks = new List<ApplicationTask>
 };
 
 const string TaskEndpoint = "Tasks";
+string CategoriesApi = $"http://{Environment.GetEnvironmentVariable("CATEGORIES_SERVICE")}/api" ?? "http://microtask.services.categories.api/api";
 
 app.MapGet($"api/{TaskEndpoint}", () =>
 {
@@ -109,7 +110,7 @@ app.MapGet($"api/{TaskEndpoint}/{{id:int}}", async (int id, HttpClient client) =
     {
         return Results.NotFound();
     }
-    var responseMessage = await client.GetAsync($"http://microtask.services.categories.api/api/Categories/{task.CategoryId}");
+    var responseMessage = await client.GetAsync($"{CategoriesApi}/Categories/{task.CategoryId}");
     var category = JsonConvert.DeserializeObject<Category>(await responseMessage.Content.ReadAsStringAsync());
     if (category is not null)
     {
@@ -120,7 +121,7 @@ app.MapGet($"api/{TaskEndpoint}/{{id:int}}", async (int id, HttpClient client) =
 
 app.MapPost($"api/{TaskEndpoint}", async (ApplicationTask task, ClaimsPrincipal user, HttpClient client) =>
 {
-    var responseMessage = await client.GetAsync($"http://microtask.services.categories.api/api/Categories/{task.CategoryId}");
+    var responseMessage = await client.GetAsync($"{CategoriesApi}/Categories/{task.CategoryId}");
     var category = JsonConvert.DeserializeObject<Category>(await responseMessage.Content.ReadAsStringAsync());
     if (category is null)
     {
