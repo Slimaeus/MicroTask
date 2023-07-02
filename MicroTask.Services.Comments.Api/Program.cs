@@ -122,7 +122,14 @@ app.MapGet($"api/{CommentEndpoint}/{{id:int}}", async (int id, HttpClient client
 
 app.MapPost($"api/{CommentEndpoint}", async (Comment comment, ClaimsPrincipal user, HttpClient client) =>
 {
+    var responseMessage = await client.GetAsync($"{TasksApi}/Tasks/ {comment.TaskId}");
+    var task = JsonConvert.DeserializeObject<ApplicationTask>(await responseMessage.Content.ReadAsStringAsync());
+    if (task is null)
+    {
+        return Results.BadRequest("Task not found");
+    }
     comment.Id = comments.Max(x => x.Id) + 1;
+    comment.Task = task;
     comment.UserId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
     comments.Add(comment);
     return Results.Created($"api/{CommentEndpoint}", comment);
