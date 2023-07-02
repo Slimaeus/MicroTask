@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MicroTask.Services.Comments.Domain;
+using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Text;
 
@@ -83,17 +84,20 @@ var comments = new List<Comment>
     {
         Id = 1,
         Content = "Hello world",
-        UserId = 1
+        UserId = 1,
+        TaskId = 1
     },
     new Comment
     {
         Id = 2,
         Content = "Nice",
-        UserId = 2
+        UserId = 2,
+        TaskId = 2
     }
 };
 
 const string CommentEndpoint = "Comments";
+string TasksApi = Environment.GetEnvironmentVariable("TASKS_SERVICE") is not null ? $"http://{Environment.GetEnvironmentVariable("TASKS_SERVICE")}/api" : "http://microtask.services.tasks.api/api";
 
 app.MapGet($"api/{CommentEndpoint}", () =>
 {
@@ -106,6 +110,12 @@ app.MapGet($"api/{CommentEndpoint}/{{id:int}}", async (int id, HttpClient client
     if (comment is null)
     {
         return Results.NotFound();
+    }
+    var responseMessage = await client.GetAsync($"{TasksApi}/Tasks/{comment.TaskId}");
+    var task = JsonConvert.DeserializeObject<ApplicationTask>(await responseMessage.Content.ReadAsStringAsync());
+    if (task is not null)
+    {
+        comment.Task = task;
     }
     return Results.Ok(comment);
 });
