@@ -84,6 +84,7 @@ var tasks = new List<ApplicationTask>
         Id = 1,
         Title = "First Task",
         Description = "Do homework",
+        UserId = 1,
         CategoryId = 1
     },
     new ApplicationTask
@@ -91,6 +92,7 @@ var tasks = new List<ApplicationTask>
         Id = 2,
         Title = "Second Task",
         Description = "Go to sleep",
+        UserId = 2,
         CategoryId = 2
     }
 };
