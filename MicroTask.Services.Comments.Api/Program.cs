@@ -94,7 +94,6 @@ var comments = new List<Comment>
 };
 
 const string CommentEndpoint = "Comments";
-string CategoriesApi = $"http://{Environment.GetEnvironmentVariable("CATEGORIES_SERVICE")}/api" ?? "http://microtask.services.categories.api/api";
 
 app.MapGet($"api/{CommentEndpoint}", () =>
 {
@@ -108,23 +107,11 @@ app.MapGet($"api/{CommentEndpoint}/{{id:int}}", async (int id, HttpClient client
     {
         return Results.NotFound();
     }
-    //var responseMessage = await client.GetAsync($"{CategoriesApi}/Categories/{comment.CategoryId}");
-    //var category = JsonConvert.DeserializeObject<Category>(await responseMessage.Content.ReadAsStringAsync());
-    //if (category is not null)
-    //{
-    //    comment.Category = category;
-    //}
     return Results.Ok(comment);
 });
 
 app.MapPost($"api/{CommentEndpoint}", async (Comment comment, ClaimsPrincipal user, HttpClient client) =>
 {
-    //var responseMessage = await client.GetAsync($"{CategoriesApi}/Categories/{comment.CategoryId}");
-    //var category = JsonConvert.DeserializeObject<Category>(await responseMessage.Content.ReadAsStringAsync());
-    //if (category is null)
-    //{
-    //    return Results.BadRequest("Category not found");
-    //}
     comment.Id = comments.Max(x => x.Id) + 1;
     comment.UserId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
     comments.Add(comment);
