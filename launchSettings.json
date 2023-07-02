@@ -6,7 +6,8 @@
       "serviceActions": {
         "microtask.services.tasks.api": "StartDebugging",
         "microtask.services.users.api": "StartDebugging",
-        "microtask.services.categories.api": "StartDebugging"
+        "microtask.services.categories.api": "StartDebugging",
+        "microtask.services.comments.api": "StartDebugging"
       }
     }
   }

@@ -1,8 +1,8 @@
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MicroTask.Services.Tasks.Domain;
-using Newtonsoft.Json;
+using MicroTask.Services.Comments.Domain;
 using System.Security.Claims;
 using System.Text;
 
@@ -77,78 +77,74 @@ app.UseAuthorization();
 
 //app.UseHttpsRedirection();
 
-var tasks = new List<ApplicationTask>
+var comments = new List<Comment>
 {
-    new ApplicationTask
+    new Comment
     {
         Id = 1,
-        Title = "First Task",
-        Description = "Do homework",
-        CategoryId = 1
+        Content = "Hello world",
+        UserId = 1
     },
-    new ApplicationTask
+    new Comment
     {
         Id = 2,
-        Title = "Second Task",
-        Description = "Go to sleep",
-        CategoryId = 2
+        Content = "Nice",
+        UserId = 2
     }
 };
 
-const string TaskEndpoint = "Tasks";
-string CategoriesApi = Environment.GetEnvironmentVariable("CATEGORIES_SERVICE") is not null ? $"http://{Environment.GetEnvironmentVariable("CATEGORIES_SERVICE")}/api" : "http://microtask.services.categories.api/api";
+const string CommentEndpoint = "Comments";
+string CategoriesApi = $"http://{Environment.GetEnvironmentVariable("CATEGORIES_SERVICE")}/api" ?? "http://microtask.services.categories.api/api";
 
-app.MapGet($"api/{TaskEndpoint}", () =>
+app.MapGet($"api/{CommentEndpoint}", () =>
 {
-    return Results.Ok(tasks);
+    return Results.Ok(comments);
 });
 
-app.MapGet($"api/{TaskEndpoint}/{{id:int}}", async (int id, HttpClient client) =>
+app.MapGet($"api/{CommentEndpoint}/{{id:int}}", async (int id, HttpClient client) =>
 {
-    var task = tasks.SingleOrDefault(x => x.Id == id);
-    if (task is null)
+    var comment = comments.SingleOrDefault(x => x.Id == id);
+    if (comment is null)
     {
         return Results.NotFound();
     }
-    var responseMessage = await client.GetAsync($"{CategoriesApi}/Categories/{task.CategoryId}");
-    var category = JsonConvert.DeserializeObject<Category>(await responseMessage.Content.ReadAsStringAsync());
-    if (category is not null)
-    {
-        task.Category = category;
-    }
-    return Results.Ok(task);
+    //var responseMessage = await client.GetAsync($"{CategoriesApi}/Categories/{comment.CategoryId}");
+    //var category = JsonConvert.DeserializeObject<Category>(await responseMessage.Content.ReadAsStringAsync());
+    //if (category is not null)
+    //{
+    //    comment.Category = category;
+    //}
+    return Results.Ok(comment);
 });
 
-app.MapPost($"api/{TaskEndpoint}", async (ApplicationTask task, ClaimsPrincipal user, HttpClient client) =>
+app.MapPost($"api/{CommentEndpoint}", async (Comment comment, ClaimsPrincipal user, HttpClient client) =>
 {
-    var responseMessage = await client.GetAsync($"{CategoriesApi}/Categories/{task.CategoryId}");
-    var category = JsonConvert.DeserializeObject<Category>(await responseMessage.Content.ReadAsStringAsync());
-    if (category is null)
-    {
-        return Results.BadRequest("Category not found");
-    }
-    task.Id = tasks.Max(x => x.Id) + 1;
-    task.Category = category;
-    task.UserId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
-    tasks.Add(task);
-    return Results.Created($"api/{TaskEndpoint}", task);
+    //var responseMessage = await client.GetAsync($"{CategoriesApi}/Categories/{comment.CategoryId}");
+    //var category = JsonConvert.DeserializeObject<Category>(await responseMessage.Content.ReadAsStringAsync());
+    //if (category is null)
+    //{
+    //    return Results.BadRequest("Category not found");
+    //}
+    comment.Id = comments.Max(x => x.Id) + 1;
+    comment.UserId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    comments.Add(comment);
+    return Results.Created($"api/{CommentEndpoint}", comment);
 }).RequireAuthorization();
 
-app.MapPut($"api/{TaskEndpoint}/{{id:int}}", (int id, ApplicationTask taskDto) =>
+app.MapPut($"api/{CommentEndpoint}/{{id:int}}", (int id, Comment commentDto) =>
 {
-    if (id != taskDto.Id) return Results.BadRequest();
-    var task = tasks.SingleOrDefault(x => x.Id == id);
-    if (task is null) return Results.NotFound();
-    task.Title = taskDto.Title ?? task.Title;
-    task.Description = taskDto.Description ?? task.Description;
+    if (id != commentDto.Id) return Results.BadRequest();
+    var comment = comments.SingleOrDefault(x => x.Id == id);
+    if (comment is null) return Results.NotFound();
+    comment.Content = commentDto.Content ?? comment.Content;
     return Results.NoContent();
 });
 
-app.MapDelete($"api/{TaskEndpoint}/{{id:int}}", (int id) =>
+app.MapDelete($"api/{CommentEndpoint}/{{id:int}}", (int id) =>
 {
-    var task = tasks.SingleOrDefault(x => x.Id == id);
-    if (task is null) return Results.NotFound();
-    var removeResult = tasks.Remove(task);
+    var comment = comments.SingleOrDefault(x => x.Id == id);
+    if (comment is null) return Results.NotFound();
+    var removeResult = comments.Remove(comment);
     return removeResult switch
     {
         true => Results.NoContent(),
