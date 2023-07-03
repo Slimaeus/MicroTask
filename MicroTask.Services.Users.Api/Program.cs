@@ -38,13 +38,25 @@ var users = new List<ApplicationUser>
     }
 };
 
-app.MapPost("api/Users/login", (TokenGenerator tokenGenerator, ApplicationUser userDto) =>
+const string UserEndpoint = "Users";
+
+app.MapPost($"api/{UserEndpoint}/login", (TokenGenerator tokenGenerator, ApplicationUser userDto) =>
 {
     var user = users.SingleOrDefault(x => x.UserName == userDto.UserName);
     if (user is null) return Results.NotFound();
     if (user.Password != userDto.Password) return Results.Unauthorized();
     var token = tokenGenerator.GenerateToken(user);
     return Results.Ok(token);
+});
+
+app.MapGet($"api/{UserEndpoint}/{{id:int}}", async (int id, HttpClient client) =>
+{
+    var user = users.SingleOrDefault(x => x.Id == id);
+    if (user is null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(user);
 });
 
 app.Run();
