@@ -167,7 +167,7 @@ app.MapPost($"api/{TaskEndpoint}", async (ApplicationTask task, HttpClient clien
     task.UserId = user.Id;
     task.User = user;
     tasks.Add(task);
-    return Results.Created($"api/{TaskEndpoint}", new ApplicationTask { Id = task.Id, Title = task.Title, Description = task.Description, Category = task.Category, User = task.User });
+    return Results.Created($"api/{TaskEndpoint}", new ApplicationTaskDTO { Id = task.Id, Title = task.Title, Description = task.Description, Category = task.Category, User = task.User });
 });
 
 app.MapPut($"api/{TaskEndpoint}/{{id:int}}", (int id, ApplicationTask taskDto) =>
