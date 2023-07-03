@@ -113,14 +113,17 @@ app.MapGet($"api/{CommentEndpoint}/{{id:int}}", async (int id, HttpClient client
     {
         return Results.NotFound();
     }
-    var taskResponse = await client.GetAsync($"{TasksApi}/Tasks/{comment.TaskId}");
-    var task = JsonConvert.DeserializeObject<ApplicationTask>(await taskResponse.Content.ReadAsStringAsync());
+    var getTasks = new[] {
+        client.GetAsync($"{TasksApi}/Tasks/{comment.TaskId}"),
+        client.GetAsync($"{UsersApi}/Users/{comment.UserId}")
+    };
+    var responses = await Task.WhenAll(getTasks);
+    var task = JsonConvert.DeserializeObject<ApplicationTask>(await responses[0].Content.ReadAsStringAsync());
     if (task is not null)
     {
         comment.Task = task;
     }
-    var userResponse = await client.GetAsync($"{UsersApi}/Users/{comment.UserId}");
-    var user = JsonConvert.DeserializeObject<ApplicationUser>(await userResponse.Content.ReadAsStringAsync());
+    var user = JsonConvert.DeserializeObject<ApplicationUser>(await responses[1].Content.ReadAsStringAsync());
     if (user is not null)
     {
         comment.User = user;
