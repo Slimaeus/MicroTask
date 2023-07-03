@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MicroTask.Services.Tasks.Application\MicroTask.Services.Tasks.Application.csproj" />
     <ProjectReference Include="..\MicroTask.Services.Tasks.Domain\MicroTask.Services.Tasks.Domain.csproj" />
   </ItemGroup>
 

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MicroTask.Services.Tasks.Application.Tasks;
 using MicroTask.Services.Tasks.Domain;
 using Newtonsoft.Json;
 using System.Security.Claims;
@@ -105,7 +106,8 @@ string UsersApi = Environment.GetEnvironmentVariable("USERS_SERVICE") is not nul
 
 app.MapGet($"api/{TaskEndpoint}", () =>
 {
-    return Results.Ok(tasks);
+    var taskDTOs = tasks.Select(task => new ApplicationTaskDTO { Id = task.Id, Title = task.Title, Description = task.Description });
+    return Results.Ok(taskDTOs);
 });
 
 app.MapGet($"api/{TaskEndpoint}/{{id:int}}", async (int id, HttpClient client) =>
