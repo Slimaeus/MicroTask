@@ -4,7 +4,6 @@ using Microsoft.OpenApi.Models;
 using MicroTask.Services.Tasks.Application.Tasks;
 using MicroTask.Services.Tasks.Domain;
 using Newtonsoft.Json;
-using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -135,20 +134,41 @@ app.MapGet($"api/{TaskEndpoint}/{{id:int}}", async (int id, HttpClient client) =
     return Results.Ok(new ApplicationTaskDTO { Id = task.Id, Title = task.Title, Description = task.Description, Category = task.Category, User = task.User });
 });
 
-app.MapPost($"api/{TaskEndpoint}", async (ApplicationTask task, ClaimsPrincipal user, HttpClient client) =>
+app.MapPost($"api/{TaskEndpoint}", async (ApplicationTask task, HttpClient client) =>
 {
-    var responseMessage = await client.GetAsync($"{CategoriesApi}/{CategoryEndpoint}/{task.CategoryId}");
-    var category = JsonConvert.DeserializeObject<Category>(await responseMessage.Content.ReadAsStringAsync());
+    var getTasks = new Task<HttpResponseMessage>[]
+    {
+        client.GetAsync($"{CategoriesApi}/{CategoryEndpoint}/{task.CategoryId}"),
+        client.GetAsync($"{UsersApi}/{UserEndpoint}/{task.UserId}")
+    };
+
+    var responseMessages = await Task.WhenAll(getTasks);
+
+    var categoryResponse = await responseMessages[0].Content.ReadAsStringAsync();
+    var userResponse = await responseMessages[1].Content.ReadAsStringAsync();
+
+    var category = JsonConvert.DeserializeObject<Category>(await responseMessages[0].Content.ReadAsStringAsync());
+
     if (category is null)
     {
         return Results.BadRequest("Category not found");
     }
+
+    var user = JsonConvert.DeserializeObject<ApplicationUser>(await responseMessages[1].Content.ReadAsStringAsync());
+
+    if (user is null)
+    {
+        return Results.BadRequest("User not found");
+    }
+
     task.Id = tasks.Max(x => x.Id) + 1;
+    task.CategoryId = category.Id;
     task.Category = category;
-    task.UserId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    task.UserId = user.Id;
+    task.User = user;
     tasks.Add(task);
-    return Results.Created($"api/{TaskEndpoint}", task);
-}).RequireAuthorization();
+    return Results.Created($"api/{TaskEndpoint}", new ApplicationTask { Id = task.Id, Title = task.Title, Description = task.Description, Category = task.Category, User = task.User });
+});
 
 app.MapPut($"api/{TaskEndpoint}/{{id:int}}", (int id, ApplicationTask taskDto) =>
 {
