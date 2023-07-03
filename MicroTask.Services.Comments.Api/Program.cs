@@ -167,7 +167,7 @@ app.MapPost($"api/{CommentEndpoint}", async (CreateCommentDTO createCommentDTO, 
     return Results.Created($"api/{CommentEndpoint}", new CommentDTO { Id = comment.Id, Content = comment.Content, Task = task, User = user });
 });
 
-app.MapPut($"api/{CommentEndpoint}/{{id:int}}", (int id, Comment commentDto) =>
+app.MapPut($"api/{CommentEndpoint}/{{id:int}}", (int id, UpdateCommentDTO commentDto) =>
 {
     if (id != commentDto.Id) return Results.BadRequest();
     var comment = comments.SingleOrDefault(x => x.Id == id);
