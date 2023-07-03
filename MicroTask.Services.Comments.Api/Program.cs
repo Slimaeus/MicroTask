@@ -158,7 +158,7 @@ app.MapPut($"api/{CommentEndpoint}/{{id:int}}", (int id, Comment commentDto) =>
 
 app.MapDelete($"api/{CommentEndpoint}/{{id:int}}", (int id) =>
 {
-    var comment = comments.SingleOrDefault(x => x.Id == id);
+    var comment = comments.FirstOrDefault(x => x.Id == id);
     if (comment is null) return Results.NotFound();
     var removeResult = comments.Remove(comment);
     return removeResult switch
