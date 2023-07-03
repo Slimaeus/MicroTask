@@ -1,3 +1,4 @@
+using MicroTask.Services.Categories.Application.Categories.DTOs;
 using MicroTask.Services.Categories.Domain;
 using System.Security.Claims;
 
@@ -52,12 +53,17 @@ app.MapGet($"api/{CategoryEndpoint}/{{id:int}}", (int id) =>
     };
 });
 
-app.MapPost($"api/{CategoryEndpoint}", (Category category, ClaimsPrincipal user) =>
+app.MapPost($"api/{CategoryEndpoint}", (CreateCategoryDTO categoryDTO, ClaimsPrincipal user) =>
 {
-    category.Id = categories.Max(x => x.Id) + 1;
+    var category = new Category
+    {
+        Id = categories.Max(x => x.Id) + 1,
+        Title = categoryDTO.Title,
+        Description = categoryDTO.Description
+    };
     categories.Add(category);
     return Results.Created($"api/{CategoryEndpoint}", category);
-}).RequireAuthorization();
+});
 
 app.MapPut($"api/{CategoryEndpoint}/{{id:int}}", (int id, Category categoryDto) =>
 {
