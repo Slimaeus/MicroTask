@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MicroTask.Services.Comments.Application.Comments;
 using MicroTask.Services.Comments.Domain;
 using Newtonsoft.Json;
 using System.Security.Claims;
@@ -104,7 +105,8 @@ string UsersApi = Environment.GetEnvironmentVariable("USERS_SERVICE") is not nul
 
 app.MapGet($"api/{CommentEndpoint}", () =>
 {
-    return Results.Ok(comments);
+    var commentDTOs = comments.Select(comment => new CommentDTO { Id = comment.Id, Content = comment.Content });
+    return Results.Ok(commentDTOs);
 });
 
 app.MapGet($"api/{CommentEndpoint}/{{id:int}}", async (int id, HttpClient client) =>
