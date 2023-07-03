@@ -132,7 +132,7 @@ app.MapGet($"api/{TaskEndpoint}/{{id:int}}", async (int id, HttpClient client) =
     task.Category = JsonConvert.DeserializeObject<Category>(categoryResponse);
     task.User = JsonConvert.DeserializeObject<ApplicationUser>(userResponse);
 
-    return Results.Ok(task);
+    return Results.Ok(new ApplicationTaskDTO { Id = task.Id, Title = task.Title, Description = task.Description, Category = task.Category, User = task.User });
 });
 
 app.MapPost($"api/{TaskEndpoint}", async (ApplicationTask task, ClaimsPrincipal user, HttpClient client) =>
