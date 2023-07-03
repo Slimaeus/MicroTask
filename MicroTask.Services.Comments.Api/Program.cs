@@ -117,13 +117,13 @@ app.MapGet($"api/{CommentEndpoint}/{{id:int}}", async (int id, HttpClient client
         return Results.NotFound();
     }
 
-    var tasks = new Task<HttpResponseMessage>[]
+    var getTasks = new Task<HttpResponseMessage>[]
     {
         client.GetAsync($"{TasksApi}/{TaskEndpoint}/{comment.TaskId}"),
         client.GetAsync($"{UsersApi}/{UserEndpoint}/{comment.UserId}")
     };
 
-    var responseMessages = await Task.WhenAll(tasks);
+    var responseMessages = await Task.WhenAll(getTasks);
 
     var taskResponse = await responseMessages[0].Content.ReadAsStringAsync();
     var userResponse = await responseMessages[1].Content.ReadAsStringAsync();
