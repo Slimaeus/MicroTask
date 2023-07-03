@@ -170,7 +170,7 @@ app.MapPost($"api/{TaskEndpoint}", async (ApplicationTask task, HttpClient clien
     return Results.Created($"api/{TaskEndpoint}", new ApplicationTaskDTO { Id = task.Id, Title = task.Title, Description = task.Description, Category = task.Category, User = task.User });
 });
 
-app.MapPut($"api/{TaskEndpoint}/{{id:int}}", (int id, ApplicationTask taskDto) =>
+app.MapPut($"api/{TaskEndpoint}/{{id:int}}", (int id, UpdateApplicationTaskDTO taskDto) =>
 {
     if (id != taskDto.Id) return Results.BadRequest();
     var task = tasks.FirstOrDefault(x => x.Id == id);
