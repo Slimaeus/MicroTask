@@ -65,7 +65,7 @@ app.MapPost($"api/{CategoryEndpoint}", (CreateCategoryDTO categoryDTO, ClaimsPri
     return Results.Created($"api/{CategoryEndpoint}", category);
 });
 
-app.MapPut($"api/{CategoryEndpoint}/{{id:int}}", (int id, Category categoryDto) =>
+app.MapPut($"api/{CategoryEndpoint}/{{id:int}}", (int id, UpdateCategoryDTO categoryDto) =>
 {
     if (id != categoryDto.Id) return Results.BadRequest();
     var category = categories.SingleOrDefault(x => x.Id == id);
