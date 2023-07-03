@@ -135,20 +135,37 @@ app.MapGet($"api/{CommentEndpoint}/{{id:int}}", async (int id, HttpClient client
 });
 
 
-app.MapPost($"api/{CommentEndpoint}", async (Comment comment, ClaimsPrincipal user, HttpClient client) =>
+app.MapPost($"api/{CommentEndpoint}", async (CreateCommentDTO createCommentDTO, ClaimsPrincipal claimsPrincipal, HttpClient client) =>
 {
-    var responseMessage = await client.GetAsync($"{TasksApi}/{TaskEndpoint}/{comment.TaskId}");
-    var task = JsonConvert.DeserializeObject<ApplicationTask>(await responseMessage.Content.ReadAsStringAsync());
+    var tasks = new Task<HttpResponseMessage>[]
+    {
+        client.GetAsync($"{TasksApi}/{TaskEndpoint}/{createCommentDTO.TaskId}"),
+        client.GetAsync($"{UsersApi}/{UserEndpoint}/{createCommentDTO.UserId}")
+    };
+
+    var responseMessages = await Task.WhenAll(tasks);
+
+    var taskResponse = await responseMessages[0].Content.ReadAsStringAsync();
+    var userResponse = await responseMessages[1].Content.ReadAsStringAsync();
+
+    var task = JsonConvert.DeserializeObject<ApplicationTask>(taskResponse);
     if (task is null)
     {
         return Results.BadRequest("Task not found");
     }
+    var user = JsonConvert.DeserializeObject<ApplicationUser>(userResponse);
+    if (user is null)
+    {
+        return Results.BadRequest("User not found");
+    }
+    var comment = new Comment();
     comment.Id = comments.Max(x => x.Id) + 1;
-    comment.Task = task;
-    comment.UserId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    comment.Content = comment.Content;
+    comment.TaskId = task.Id;
+    comment.UserId = user.Id;
     comments.Add(comment);
-    return Results.Created($"api/{CommentEndpoint}", comment);
-}).RequireAuthorization();
+    return Results.Created($"api/{CommentEndpoint}", new CommentDTO { Id = comment.Id, Content = comment.Content, Task = task, User = user });
+});
 
 app.MapPut($"api/{CommentEndpoint}/{{id:int}}", (int id, Comment commentDto) =>
 {

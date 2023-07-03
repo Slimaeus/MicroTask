@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MicroTask.Services.Comments.Domain\MicroTask.Services.Comments.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
