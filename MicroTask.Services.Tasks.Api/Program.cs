@@ -135,7 +135,7 @@ app.MapGet($"api/{TaskEndpoint}/{{id:int}}", async (int id, HttpClient client) =
 
 app.MapPost($"api/{TaskEndpoint}", async (ApplicationTask task, ClaimsPrincipal user, HttpClient client) =>
 {
-    var responseMessage = await client.GetAsync($"{CategoriesApi}/Categories/{task.CategoryId}");
+    var responseMessage = await client.GetAsync($"{CategoriesApi}/{CategoryEndpoint}/{task.CategoryId}");
     var category = JsonConvert.DeserializeObject<Category>(await responseMessage.Content.ReadAsStringAsync());
     if (category is null)
     {
