@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MicroTask.Services.Comments.Domain;
+using MicroTask.Services.Users.Domain;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Text;
@@ -98,6 +99,7 @@ var comments = new List<Comment>
 
 const string CommentEndpoint = "Comments";
 string TasksApi = Environment.GetEnvironmentVariable("TASKS_SERVICE") is not null ? $"http://{Environment.GetEnvironmentVariable("TASKS_SERVICE")}/api" : "http://microtask.services.tasks.api/api";
+string UsersApi = Environment.GetEnvironmentVariable("USERS_SERVICE") is not null ? $"http://{Environment.GetEnvironmentVariable("USERS_SERVICE")}/api" : "http://microtask.services.users.api/api";
 
 app.MapGet($"api/{CommentEndpoint}", () =>
 {
@@ -111,11 +113,17 @@ app.MapGet($"api/{CommentEndpoint}/{{id:int}}", async (int id, HttpClient client
     {
         return Results.NotFound();
     }
-    var responseMessage = await client.GetAsync($"{TasksApi}/Tasks/{comment.TaskId}");
-    var task = JsonConvert.DeserializeObject<ApplicationTask>(await responseMessage.Content.ReadAsStringAsync());
+    var taskResponse = await client.GetAsync($"{TasksApi}/Tasks/{comment.TaskId}");
+    var task = JsonConvert.DeserializeObject<ApplicationTask>(await taskResponse.Content.ReadAsStringAsync());
     if (task is not null)
     {
         comment.Task = task;
+    }
+    var userResponse = await client.GetAsync($"{UsersApi}/Users/{comment.UserId}");
+    var user = JsonConvert.DeserializeObject<ApplicationUser>(await userResponse.Content.ReadAsStringAsync());
+    if (user is not null)
+    {
+        comment.User = user;
     }
     return Results.Ok(comment);
 });
