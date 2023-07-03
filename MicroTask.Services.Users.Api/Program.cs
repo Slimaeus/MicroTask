@@ -1,3 +1,4 @@
+using MicroTask.Services.Users.Application.Users;
 using MicroTask.Services.Users.Domain;
 using MicroTask.Services.Users.Infrastructure;
 
@@ -49,14 +50,14 @@ app.MapPost($"api/{UserEndpoint}/login", (TokenGenerator tokenGenerator, Applica
     return Results.Ok(token);
 });
 
-app.MapGet($"api/{UserEndpoint}/{{id:int}}", async (int id, HttpClient client) =>
+app.MapGet($"api/{UserEndpoint}/{{id:int}}", (int id, HttpClient client) =>
 {
     var user = users.SingleOrDefault(x => x.Id == id);
     if (user is null)
     {
         return Results.NotFound();
     }
-    return Results.Ok(user);
+    return Results.Ok(new ApplicationUserDTO { Id = user.Id, UserName = user.UserName });
 });
 
 app.Run();
