@@ -160,7 +160,7 @@ app.MapPost($"api/{CommentEndpoint}", async (CreateCommentDTO createCommentDTO, 
     }
     var comment = new Comment();
     comment.Id = comments.Max(x => x.Id) + 1;
-    comment.Content = comment.Content;
+    comment.Content = createCommentDTO.Content;
     comment.TaskId = task.Id;
     comment.UserId = user.Id;
     comments.Add(comment);
