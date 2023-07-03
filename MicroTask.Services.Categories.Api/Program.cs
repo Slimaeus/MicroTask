@@ -40,6 +40,7 @@ const string CategoryEndpoint = "Categories";
 
 app.MapGet($"api/{CategoryEndpoint}", () =>
 {
+    var categoryDTOs = categories.Select(category => new CategoryDTO { Id = category.Id, Title = category.Title, Description = category.Description });
     return Results.Ok(categories);
 });
 
@@ -49,20 +50,21 @@ app.MapGet($"api/{CategoryEndpoint}/{{id:int}}", (int id) =>
     return category switch
     {
         null => Results.NotFound(),
-        _ => Results.Ok(category)
+        _ => Results.Ok(new CategoryDTO { Id = category.Id, Title = category.Title, Description = category.Description })
     };
 });
 
-app.MapPost($"api/{CategoryEndpoint}", (CreateCategoryDTO categoryDTO, ClaimsPrincipal user) =>
+app.MapPost($"api/{CategoryEndpoint}", (CreateCategoryDTO createCategoryDTO, ClaimsPrincipal user) =>
 {
     var category = new Category
     {
         Id = categories.Max(x => x.Id) + 1,
-        Title = categoryDTO.Title,
-        Description = categoryDTO.Description
+        Title = createCategoryDTO.Title,
+        Description = createCategoryDTO.Description
     };
     categories.Add(category);
-    return Results.Created($"api/{CategoryEndpoint}", category);
+    var categoryDTO = new CategoryDTO { Id = category.Id, Title = category.Title, Description = category.Description };
+    return Results.Created($"api/{CategoryEndpoint}", categoryDTO);
 });
 
 app.MapPut($"api/{CategoryEndpoint}/{{id:int}}", (int id, UpdateCategoryDTO categoryDto) =>
