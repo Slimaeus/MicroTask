@@ -162,7 +162,9 @@ app.MapPost($"api/{CommentEndpoint}", async (CreateCommentDTO createCommentDTO, 
     comment.Id = comments.Max(x => x.Id) + 1;
     comment.Content = createCommentDTO.Content;
     comment.TaskId = task.Id;
+    comment.Task = task;
     comment.UserId = user.Id;
+    comment.User = user;
     comments.Add(comment);
     return Results.Created($"api/{CommentEndpoint}", new CommentDTO { Id = comment.Id, Content = comment.Content, Task = task, User = user });
 });
