@@ -131,7 +131,7 @@ app.MapGet($"api/{CommentEndpoint}/{{id:int}}", async (int id, HttpClient client
     comment.Task = JsonConvert.DeserializeObject<ApplicationTask>(taskResponse);
     comment.User = JsonConvert.DeserializeObject<ApplicationUser>(userResponse);
 
-    return Results.Ok(comment);
+    return Results.Ok(new CommentDTO { Id = comment.Id, Content = comment.Content, Task = comment.Task, User = comment.User });
 });
 
 
