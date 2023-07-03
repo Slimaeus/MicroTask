@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MicroTask.Services.Comments.Domain;
-using MicroTask.Services.Users.Domain;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Text;
@@ -98,6 +97,8 @@ var comments = new List<Comment>
 };
 
 const string CommentEndpoint = "Comments";
+const string TaskEndpoint = "Tasks";
+const string UserEndpoint = "Users";
 string TasksApi = Environment.GetEnvironmentVariable("TASKS_SERVICE") is not null ? $"http://{Environment.GetEnvironmentVariable("TASKS_SERVICE")}/api" : "http://microtask.services.tasks.api/api";
 string UsersApi = Environment.GetEnvironmentVariable("USERS_SERVICE") is not null ? $"http://{Environment.GetEnvironmentVariable("USERS_SERVICE")}/api" : "http://microtask.services.users.api/api";
 
@@ -116,8 +117,8 @@ app.MapGet($"api/{CommentEndpoint}/{{id:int}}", async (int id, HttpClient client
 
     var tasks = new Task<HttpResponseMessage>[]
     {
-        client.GetAsync($"{TasksApi}/Tasks/{comment.TaskId}"),
-        client.GetAsync($"{UsersApi}/Users/{comment.UserId}")
+        client.GetAsync($"{TasksApi}/{TaskEndpoint}/{comment.TaskId}"),
+        client.GetAsync($"{UsersApi}/{UserEndpoint}/{comment.UserId}")
     };
 
     var responseMessages = await Task.WhenAll(tasks);
@@ -134,7 +135,7 @@ app.MapGet($"api/{CommentEndpoint}/{{id:int}}", async (int id, HttpClient client
 
 app.MapPost($"api/{CommentEndpoint}", async (Comment comment, ClaimsPrincipal user, HttpClient client) =>
 {
-    var responseMessage = await client.GetAsync($"{TasksApi}/Tasks/ {comment.TaskId}");
+    var responseMessage = await client.GetAsync($"{TasksApi}/{TaskEndpoint}/{comment.TaskId}");
     var task = JsonConvert.DeserializeObject<ApplicationTask>(await responseMessage.Content.ReadAsStringAsync());
     if (task is null)
     {

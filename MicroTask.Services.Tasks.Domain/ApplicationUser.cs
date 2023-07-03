@@ -1,4 +1,4 @@
-﻿namespace MicroTask.Services.Comments.Domain;
+﻿namespace MicroTask.Services.Tasks.Domain;
 
 public class ApplicationUser
 {

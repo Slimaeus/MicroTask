@@ -1,6 +1,4 @@
-﻿using MicroTask.Services.Users.Domain;
-
-namespace MicroTask.Services.Comments.Domain;
+﻿namespace MicroTask.Services.Comments.Domain;
 
 public class Comment
 {

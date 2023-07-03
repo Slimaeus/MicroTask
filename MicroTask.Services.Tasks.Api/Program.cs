@@ -98,7 +98,10 @@ var tasks = new List<ApplicationTask>
 };
 
 const string TaskEndpoint = "Tasks";
+const string CategoryEndpoint = "Categories";
+const string UserEndpoint = "Users";
 string CategoriesApi = Environment.GetEnvironmentVariable("CATEGORIES_SERVICE") is not null ? $"http://{Environment.GetEnvironmentVariable("CATEGORIES_SERVICE")}/api" : "http://microtask.services.categories.api/api";
+string UsersApi = Environment.GetEnvironmentVariable("USERS_SERVICE") is not null ? $"http://{Environment.GetEnvironmentVariable("USERS_SERVICE")}/api" : "http://microtask.services.users.api/api";
 
 app.MapGet($"api/{TaskEndpoint}", () =>
 {
@@ -107,17 +110,26 @@ app.MapGet($"api/{TaskEndpoint}", () =>
 
 app.MapGet($"api/{TaskEndpoint}/{{id:int}}", async (int id, HttpClient client) =>
 {
-    var task = tasks.SingleOrDefault(x => x.Id == id);
+    var task = tasks.FirstOrDefault(x => x.Id == id);
     if (task is null)
     {
         return Results.NotFound();
     }
-    var responseMessage = await client.GetAsync($"{CategoriesApi}/Categories/{task.CategoryId}");
-    var category = JsonConvert.DeserializeObject<Category>(await responseMessage.Content.ReadAsStringAsync());
-    if (category is not null)
+
+    var getTasks = new Task<HttpResponseMessage>[]
     {
-        task.Category = category;
-    }
+        client.GetAsync($"{CategoriesApi}/{CategoryEndpoint}/{task.CategoryId}"),
+        client.GetAsync($"{UsersApi}/{UserEndpoint}/{task.UserId}")
+    };
+
+    var responseMessages = await Task.WhenAll(getTasks);
+
+    var categoryResponse = await responseMessages[0].Content.ReadAsStringAsync();
+    var userResponse = await responseMessages[1].Content.ReadAsStringAsync();
+
+    task.Category = JsonConvert.DeserializeObject<Category>(categoryResponse);
+    task.User = JsonConvert.DeserializeObject<ApplicationUser>(userResponse);
+
     return Results.Ok(task);
 });
 
@@ -139,7 +151,7 @@ app.MapPost($"api/{TaskEndpoint}", async (ApplicationTask task, ClaimsPrincipal 
 app.MapPut($"api/{TaskEndpoint}/{{id:int}}", (int id, ApplicationTask taskDto) =>
 {
     if (id != taskDto.Id) return Results.BadRequest();
-    var task = tasks.SingleOrDefault(x => x.Id == id);
+    var task = tasks.FirstOrDefault(x => x.Id == id);
     if (task is null) return Results.NotFound();
     task.Title = taskDto.Title ?? task.Title;
     task.Description = taskDto.Description ?? task.Description;
@@ -148,7 +160,7 @@ app.MapPut($"api/{TaskEndpoint}/{{id:int}}", (int id, ApplicationTask taskDto) =
 
 app.MapDelete($"api/{TaskEndpoint}/{{id:int}}", (int id) =>
 {
-    var task = tasks.SingleOrDefault(x => x.Id == id);
+    var task = tasks.FirstOrDefault(x => x.Id == id);
     if (task is null) return Results.NotFound();
     var removeResult = tasks.Remove(task);
     return removeResult switch
