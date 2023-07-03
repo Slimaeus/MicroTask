@@ -85,7 +85,18 @@ var tasks = new List<ApplicationTask>
         Title = "First Task",
         Description = "Do homework",
         UserId = 1,
-        CategoryId = 1
+        User = new ApplicationUser
+        {
+            Id = 1,
+            UserName = "admin"
+        },
+        CategoryId = 1,
+        Category = new Category
+        {
+            Id = 1,
+            Title = "Learning",
+            Description = "Learning"
+        }
     },
     new ApplicationTask
     {
@@ -93,7 +104,18 @@ var tasks = new List<ApplicationTask>
         Title = "Second Task",
         Description = "Go to sleep",
         UserId = 2,
-        CategoryId = 2
+        User = new ApplicationUser
+        {
+            Id = 2,
+            UserName = "user"
+        },
+        CategoryId = 2,
+        Category = new Category
+        {
+            Id = 2,
+            Title = "Relaxing",
+            Description = "Relaxing"
+        }
     }
 };
 
@@ -105,7 +127,7 @@ string UsersApi = Environment.GetEnvironmentVariable("USERS_SERVICE") is not nul
 
 app.MapGet($"api/{TaskEndpoint}", () =>
 {
-    var taskDTOs = tasks.Select(task => new ApplicationTaskDTO { Id = task.Id, Title = task.Title, Description = task.Description });
+    var taskDTOs = tasks.Select(task => new ApplicationTaskDTO { Id = task.Id, Title = task.Title, Description = task.Description, Category = task.Category, User = task.User });
     return Results.Ok(taskDTOs);
 });
 

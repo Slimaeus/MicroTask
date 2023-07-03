@@ -86,14 +86,40 @@ var comments = new List<Comment>
         Id = 1,
         Content = "Hello world",
         UserId = 1,
-        TaskId = 1
+        User = new ApplicationUser
+        {
+            Id = 1,
+            UserName = "admin"
+        },
+        TaskId = 1,
+        Task = new ApplicationTask
+        {
+            Id = 1,
+            Title = "First Task",
+            Description = "Do homework",
+            UserId = 1,
+            CategoryId = 1
+        }
     },
     new Comment
     {
         Id = 2,
         Content = "Nice",
         UserId = 2,
-        TaskId = 2
+        User = new ApplicationUser
+        {
+            Id = 2,
+            UserName = "user"
+        },
+        TaskId = 2,
+        Task = new ApplicationTask
+        {
+            Id = 2,
+            Title = "Second Task",
+            Description = "Go to sleep",
+            UserId = 2,
+            CategoryId = 2
+        }
     }
 };
 
@@ -105,7 +131,7 @@ string UsersApi = Environment.GetEnvironmentVariable("USERS_SERVICE") is not nul
 
 app.MapGet($"api/{CommentEndpoint}", () =>
 {
-    var commentDTOs = comments.Select(comment => new CommentDTO { Id = comment.Id, Content = comment.Content });
+    var commentDTOs = comments.Select(comment => new CommentDTO { Id = comment.Id, Content = comment.Content, Task = comment.Task, User = comment.User });
     return Results.Ok(commentDTOs);
 });
 
